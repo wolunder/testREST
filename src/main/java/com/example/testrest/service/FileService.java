@@ -116,7 +116,6 @@ public class FileService {
 
         String setStringToOwnerCad(LinkedHashSet<String> container, StringBuilder stringBuilder){
             Iterator<String> iterator  = container.iterator();
-
             while (iterator.hasNext()){
                 stringBuilder.append(iterator.next());
             }

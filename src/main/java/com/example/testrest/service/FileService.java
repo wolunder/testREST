@@ -7,6 +7,7 @@ import com.example.testrest.model.xmlmodel.RegRecordEncumbrance;
 import com.example.testrest.model.xmlmodel.RegRecordOwner;
 
 import com.example.testrest.repository.impl.FileRepositoryImpl;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
@@ -14,8 +15,7 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 
 @Service
@@ -77,22 +77,65 @@ public class FileService {
         StringBuilder strEncumbranceOwner = new StringBuilder("");
         StringBuilder strDocFound = new StringBuilder("");
 
+        TreeSet<StringBuilder> regNumberEncumbranceTreeSet = new TreeSet<>();
+        TreeSet<StringBuilder> typeEncumbranceTreeSet = new TreeSet<>();
+        TreeSet<StringBuilder> durationTreeSet = new TreeSet<>();
+        TreeSet<StringBuilder> encumbranceOwnerTreeSet = new TreeSet<>();
+        TreeSet<StringBuilder> docFoundTreeSet = new TreeSet<>();
+
+        SetContainer container = new SetContainer();
         for (RegRecordEncumbrance re: regOwner.getRegRecordEncumbranceList()) {
-            strRegNumberEncumbrance.append("- "+ re.getRegNumberEncumbrance()+". \n");
-            strTypeEncumbrance.append("- "+ re.getTypeEncumbrance()+". \n");
-            strDuration.append("- "+ re.getDuration()+". \n");
-            strEncumbranceOwner.append("- "+ re.getEncumbranceOwner()+". \n");
-            strDocFound.append("- "+ re.getDocFound()+". \n");
+//            strRegNumberEncumbrance.append("- "+ re.getRegNumberEncumbrance()+". \n");
+
+            container.regNumberEncumbranceSet.add("- "+ re.getRegNumberEncumbrance()+". \n");
+
+//            strTypeEncumbrance.append("- "+ re.getTypeEncumbrance()+". \n");
+
+            container.typeEncumbranceSet.add("- "+ re.getTypeEncumbrance()+". \n");
+
+//            strDuration.append("- "+ re.getDuration()+". \n");
+
+            container.durationSet.add("- "+ re.getTypeEncumbrance()+". \n");
+
+//            strEncumbranceOwner.append("- "+ re.getEncumbranceOwner()+". \n");
+
+            container.encumbranceOwnerSet.add("- "+ re.getTypeEncumbrance()+". \n");
+
+//            strDocFound.append("- "+ re.getDocFound()+". \n");
+
+            container.docFoundSet.add("- "+ re.getTypeEncumbrance()+". \n");
         }
-        ownerCad.setRegNumberEncumbrance(strRegNumberEncumbrance.toString());
-        ownerCad.setTypeEncumbrance(strTypeEncumbrance.toString());
-        ownerCad.setDuration(strDuration.toString());
-        ownerCad.setEncumbranceOwner(strEncumbranceOwner.toString());
-        ownerCad.setDocFound(strDocFound.toString());
+
+        ownerCad.setRegNumberEncumbrance(container.setStringToOwnerCad(container.getRegNumberEncumbranceSet(),strRegNumberEncumbrance));
+        ownerCad.setTypeEncumbrance(container.setStringToOwnerCad(container.getTypeEncumbranceSet(), strTypeEncumbrance));
+        ownerCad.setDuration(container.setStringToOwnerCad(container.getDurationSet(), strDuration));
+        ownerCad.setEncumbranceOwner(container.setStringToOwnerCad(container.getEncumbranceOwnerSet(), strEncumbranceOwner));
+        ownerCad.setDocFound(container.setStringToOwnerCad(container.getDocFoundSet(), strDocFound));
 
         ownerCad.setArchiveStatus(false);
         ownerCad.setCadObject(cadObject);
 
         return ownerCad;
+    }
+
+    @Data
+    private class SetContainer  {
+
+        private LinkedHashSet<String> regNumberEncumbranceSet = new LinkedHashSet<>();
+        private LinkedHashSet<String> typeEncumbranceSet = new LinkedHashSet<>();
+        private LinkedHashSet<String> durationSet = new LinkedHashSet<>();
+        private LinkedHashSet<String> encumbranceOwnerSet = new LinkedHashSet<>();
+        private LinkedHashSet<String> docFoundSet = new LinkedHashSet<>();
+
+
+        String setStringToOwnerCad(LinkedHashSet<String> container, StringBuilder stringBuilder){
+            Iterator<String> iterator = null;
+
+            iterator = container.iterator();
+            while (iterator.hasNext()){
+                stringBuilder.append(iterator.next());
+            }
+            return stringBuilder.toString();
+        }
     }
 }

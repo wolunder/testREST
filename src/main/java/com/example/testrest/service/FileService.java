@@ -85,25 +85,12 @@ public class FileService {
 
         SetContainer container = new SetContainer();
         for (RegRecordEncumbrance re: regOwner.getRegRecordEncumbranceList()) {
-//            strRegNumberEncumbrance.append("- "+ re.getRegNumberEncumbrance()+". \n");
 
             container.regNumberEncumbranceSet.add("- "+ re.getRegNumberEncumbrance()+". \n");
-
-//            strTypeEncumbrance.append("- "+ re.getTypeEncumbrance()+". \n");
-
             container.typeEncumbranceSet.add("- "+ re.getTypeEncumbrance()+". \n");
-
-//            strDuration.append("- "+ re.getDuration()+". \n");
-
-            container.durationSet.add("- "+ re.getTypeEncumbrance()+". \n");
-
-//            strEncumbranceOwner.append("- "+ re.getEncumbranceOwner()+". \n");
-
-            container.encumbranceOwnerSet.add("- "+ re.getTypeEncumbrance()+". \n");
-
-//            strDocFound.append("- "+ re.getDocFound()+". \n");
-
-            container.docFoundSet.add("- "+ re.getTypeEncumbrance()+". \n");
+            container.durationSet.add("- "+ re.getDuration()+". \n");
+            container.encumbranceOwnerSet.add("- "+ re.getEncumbranceOwner()+". \n");
+            container.docFoundSet.add("- "+ re.getDocFound()+". \n");
         }
 
         ownerCad.setRegNumberEncumbrance(container.setStringToOwnerCad(container.getRegNumberEncumbranceSet(),strRegNumberEncumbrance));
@@ -127,11 +114,9 @@ public class FileService {
         private LinkedHashSet<String> encumbranceOwnerSet = new LinkedHashSet<>();
         private LinkedHashSet<String> docFoundSet = new LinkedHashSet<>();
 
-
         String setStringToOwnerCad(LinkedHashSet<String> container, StringBuilder stringBuilder){
-            Iterator<String> iterator = null;
+            Iterator<String> iterator  = container.iterator();
 
-            iterator = container.iterator();
             while (iterator.hasNext()){
                 stringBuilder.append(iterator.next());
             }

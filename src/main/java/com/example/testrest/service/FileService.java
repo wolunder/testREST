@@ -58,7 +58,6 @@ public class FileService {
         OwnerCad ownerCad = new OwnerCad();
 
         ownerCad.setCadNumber(cadObject.getCadNumber());
-//        ownerCad.setCadNumber(regOwner.getCadNumber());
         ownerCad.setNumberReg(regOwner.getNumberReg());
         ownerCad.setOwner(regOwner.getOwner());
         ownerCad.setRegRecord(regOwner.getRegRecord());

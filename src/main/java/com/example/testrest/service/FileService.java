@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 public class FileService {
 
     private static final Logger LOG = Logger.getLogger(FileService.class.getName());
-
     private final FileRepositoryImpl fileRepository;
 
     @Autowired
@@ -114,7 +113,7 @@ public class FileService {
         private LinkedHashSet<String> encumbranceOwnerSet = new LinkedHashSet<>();
         private LinkedHashSet<String> docFoundSet = new LinkedHashSet<>();
 
-        String setStringToOwnerCad(LinkedHashSet<String> container, StringBuilder stringBuilder){
+        private String setStringToOwnerCad(LinkedHashSet<String> container, StringBuilder stringBuilder){
             Iterator<String> iterator  = container.iterator();
             while (iterator.hasNext()){
                 stringBuilder.append(iterator.next());

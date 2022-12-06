@@ -7,7 +7,6 @@ import com.example.testrest.model.OwnerCad;
 import com.example.testrest.service.CadObjectService;
 import com.example.testrest.service.FileCadService;
 import com.example.testrest.service.OwnerCadService;
-import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -173,8 +172,7 @@ public class CadController {
                 String pathStr = PATH_File+cadObject.getFarm().replaceAll("\"","")+"/"+cadObject.getCadNumber().replaceAll(":","_")+"/"+downloadFile.getOriginalFilename();
                 File file = new File(pathStr);
                 file.getParentFile().mkdirs();
-                try (BufferedOutputStream bos = new BufferedOutputStream(
-                        new FileOutputStream(file))) {
+                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
 
                     byte[] bytes = downloadFile.getBytes();
                     bos.write(bytes);

@@ -73,6 +73,10 @@ public class CadObject {
     @JsonIgnore
     private List<OwnerCad> listOwner = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "cadObject", orphanRemoval = true)
+    @JsonIgnore
+    private List<FileCad> listFile = new ArrayList<>();
+
 
     @PrePersist
     protected void onCreate() {

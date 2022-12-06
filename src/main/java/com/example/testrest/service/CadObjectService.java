@@ -3,9 +3,11 @@ package com.example.testrest.service;
 import com.example.testrest.dto.CadObjectDTO;
 import com.example.testrest.model.CadObject;
 import com.example.testrest.repository.CadObjectRepository;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,16 +37,28 @@ public class CadObjectService {
         return cadObjectRepository.findCadObjectByCadNumber(cadNumber);
     }
 
+
     public List<CadObject> getAllObject(){
 
         LOG.info("Список кадастров извлечен");
 
-        return cadObjectRepository.findAll();
+        return cadObjectRepository.getAllObject();
     }
 
     public void deleteObject(Long id){
         Optional<CadObject> object = cadObjectRepository.findById(id);
             cadObjectRepository.delete(object.get());
+    }
+
+    public Boolean setArchiveStatusObj(Long id){
+        Optional<CadObject> findOdj = cadObjectRepository.findCadObjectById(id);
+        if(findOdj.isPresent()){
+            CadObject cadObject = findOdj.get();
+            cadObject.setArchiveStatus(true);
+            cadObjectRepository.save(cadObject);
+            return true;
+        }
+        return false;
     }
 
 

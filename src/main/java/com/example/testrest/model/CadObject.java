@@ -79,6 +79,5 @@ public class CadObject {
 
         this.createDate = LocalDateTime.now();
         this.tenancy = LocalDate.now();
-        this.archiveStatus = false;
     }
 }

@@ -154,8 +154,18 @@ public class CadController {
 
     }
 
+    //загрузка документов
     @PostMapping("/files")
     public void addOwnerToCadBase(@RequestPart MultipartFile file){
 
+    }
+
+    @PostMapping("/getNumber/{id}/set-status")
+    public ResponseEntity<String> setArchiveStatusToCadObject(@PathVariable ("id") String id){
+      boolean setStatus =  cadObjectService.setArchiveStatusObj(Long.parseLong(id));
+      if (setStatus == true){
+          return new ResponseEntity<>("Объект удален!", HttpStatus.OK);
+      }
+      else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

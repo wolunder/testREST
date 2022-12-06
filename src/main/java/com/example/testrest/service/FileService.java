@@ -76,12 +76,6 @@ public class FileService {
         StringBuilder strEncumbranceOwner = new StringBuilder("");
         StringBuilder strDocFound = new StringBuilder("");
 
-        TreeSet<StringBuilder> regNumberEncumbranceTreeSet = new TreeSet<>();
-        TreeSet<StringBuilder> typeEncumbranceTreeSet = new TreeSet<>();
-        TreeSet<StringBuilder> durationTreeSet = new TreeSet<>();
-        TreeSet<StringBuilder> encumbranceOwnerTreeSet = new TreeSet<>();
-        TreeSet<StringBuilder> docFoundTreeSet = new TreeSet<>();
-
         SetContainer container = new SetContainer();
         for (RegRecordEncumbrance re: regOwner.getRegRecordEncumbranceList()) {
 

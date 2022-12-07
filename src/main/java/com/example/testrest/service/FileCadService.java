@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.Optional;
 
 @Service
 public class FileCadService {
@@ -31,5 +32,13 @@ public class FileCadService {
          fileCad.setTypeDocument(typeDocument);
          fileCad.setCadObject(cadObject);
         return fileCadRepository.save(fileCad);
+    }
+
+    public void deleteFile(Long id){
+        fileCadRepository.deleteById(id);
+    }
+
+    public Optional <FileCad> findCadById(Long id){
+        return fileCadRepository.findById(id);
     }
 }

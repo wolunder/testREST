@@ -3,6 +3,7 @@ package com.example.testrest.controller;
 
 import com.example.testrest.dto.CadObjectDTO;
 import com.example.testrest.model.CadObject;
+import com.example.testrest.model.FileCad;
 import com.example.testrest.model.OwnerCad;
 import com.example.testrest.service.CadObjectService;
 import com.example.testrest.service.FileCadService;
@@ -109,7 +110,6 @@ public class CadController {
                 CadObject updateObject = findObject.get();
                 cadObjectService.addObject(cadObjectService.cadObjectDTOToCadObject(updateObject, cadObjectDTO));
                 response = new ResponseEntity<>(HttpStatus.OK);
-
             }
             else {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -162,14 +162,14 @@ public class CadController {
     }
 
     //тип документов добавить
-    @PostMapping("/getNumber/{id}/downloads/files")
+    @PostMapping("/getNumber/{id}/files/downloads")
     public ResponseEntity<String> addFileToCadObject(@PathVariable("id") String id ,@RequestParam("fileCad") MultipartFile downloadFile){
 
         Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(id));
         if(findObject.isPresent()){
             CadObject cadObject = findObject.get();
             if(!downloadFile.isEmpty()) {
-                String pathStr = PATH_File+cadObject.getFarm().replaceAll("\"","")+"/"+cadObject.getCadNumber().replaceAll(":","_")+"/"+downloadFile.getOriginalFilename();
+                String pathStr = PATH_File+cadObject.getFarm().trim().replaceAll("\"","")+"/"+cadObject.getCadNumber().replaceAll(":","_")+"/"+downloadFile.getOriginalFilename();
                 File file = new File(pathStr);
                 file.getParentFile().mkdirs();
                 try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
@@ -190,6 +190,23 @@ public class CadController {
             }
         }
         return new ResponseEntity<>("Кадастр не найден",HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/getNumber/{cadId}/files/{fileId}")
+    public ResponseEntity<String> deleteFileCadObj(@PathVariable String fileId){
+        Optional<FileCad> findFile = fileCadService.findCadById(Long.parseLong(fileId));
+        if(findFile.isPresent()){
+            FileCad fileCad = findFile.get();
+            File file = new File(fileCad.getFilePath());
+            String nameFile = file.getName();
+
+            if(file.delete()){
+                fileCadService.deleteFile(fileCad.getId());
+                return new ResponseEntity<>("Файл " + nameFile +" удален!", HttpStatus.OK);
+            }
+            else return new ResponseEntity<>("Файл  не найден", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>("Не найден кадастровый номер!", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/getNumber/{id}/set-status")

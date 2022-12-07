@@ -1,4 +1,5 @@
 package com.example.testrest.controller;
+
 import com.example.testrest.model.CadObject;
 import com.example.testrest.model.OwnerCad;
 import com.example.testrest.service.CadObjectService;
@@ -36,41 +37,38 @@ public class OwnerCadController {
     }
 
     @PostMapping("/cad/{idCadNum}/add-owner")
-    public ResponseEntity<OwnerCad> addOwner(@PathVariable ("idCadNum") String idNumCad, @RequestBody OwnerCad ownerCad){
+    public ResponseEntity<OwnerCad> addOwner(@PathVariable("idCadNum") String idNumCad, @RequestBody OwnerCad ownerCad) {
 
         Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(idNumCad));
-        if(findObject.isPresent()) {
+        if (findObject.isPresent()) {
             CadObject cadObject = findObject.get();
             ownerCad.setCadNumber(cadObject.getCadNumber());
             ownerCadService.addOwner(ownerCad, cadObject);
             return new ResponseEntity<>(ownerCad, HttpStatus.CREATED);
-        }
-
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //сделать сущность передачи нескольких параметров
     @PostMapping("/cad/{idCadNum}/add-list-owner/upload")
-    public ResponseEntity<?> addOwnerList(@PathVariable ("idCadNum") String idNumCad, @RequestParam("file") MultipartFile fileXml){
+    public ResponseEntity<?> addOwnerList(@PathVariable("idCadNum") String idNumCad, @RequestParam("file") MultipartFile fileXml) {
 
         Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(idNumCad));
-        if(findObject.isPresent()) {
+        if (findObject.isPresent()) {
             CadObject cadObject = findObject.get();
             try {
                 File file = new File(fileXml.getOriginalFilename());
                 FileUtils.copyInputStreamToFile(fileXml.getInputStream(), file);
-                    ownerCadService.addOwnerToDB(file, true, cadObject, "7200");
+                ownerCadService.addOwnerToDB(file, true, cadObject, "7200");
             } catch (ParserConfigurationException e) {
-                return new ResponseEntity<String>("Ошибка парсера",HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<String>("Ошибка парсера", HttpStatus.BAD_REQUEST);
             } catch (IOException e) {
-                return new ResponseEntity<String>("Ошибка ввода вывода",HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<String>("Ошибка ввода вывода", HttpStatus.BAD_REQUEST);
             } catch (SAXException e) {
-                return new ResponseEntity<String>("Ошибка преобразования",HttpStatus.BAD_REQUEST);
-            }catch (Exception e){
-                return new ResponseEntity<String>("Ошибка - " + e.getMessage(),HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<String>("Ошибка преобразования", HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {
+                return new ResponseEntity<String>("Ошибка - " + e.getMessage(), HttpStatus.BAD_REQUEST);
             }
-            return new ResponseEntity<String>("File is converted!",HttpStatus.CREATED);
-        }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<String>("File is converted!", HttpStatus.CREATED);
+        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

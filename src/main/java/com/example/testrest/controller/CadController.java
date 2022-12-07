@@ -36,6 +36,7 @@ public class CadController {
     private CadObjectService cadObjectService;
 
     private FileCadService fileCadService;
+
     @Autowired
     public CadController(CadObjectService cadObjectService, OwnerCadService ownerCadService, FileCadService fileCadService) {
         this.cadObjectService = cadObjectService;
@@ -44,132 +45,119 @@ public class CadController {
     }
 
     @PostMapping("/add-object")
-    public ResponseEntity<CadObject> addObject(@RequestBody CadObjectDTO cadObjectDTO){
+    public ResponseEntity<CadObject> addObject(@RequestBody CadObjectDTO cadObjectDTO) {
         Optional<CadObject> findObject = cadObjectService.findObjectByCadNumber(cadObjectDTO.getCadNumber());
 
-        if(!findObject.isPresent()){
+        if (!findObject.isPresent()) {
             CadObject cadObject = new CadObject();
             cadObject = cadObjectService.cadObjectDTOToCadObject(cadObject, cadObjectDTO);
             cadObjectService.addObject(cadObject);
             return new ResponseEntity<>(HttpStatus.CREATED);
 
-        }
-
-       else {
+        } else {
             System.out.println(HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
+    //в dto перевести
     @GetMapping("/getNumber/{idOrCadNum}")
-    public ResponseEntity<CadObject> findObjectByCadNumber(@PathVariable ("idOrCadNum") String idOrCadNumber){
+    public ResponseEntity<CadObject> findObjectByCadNumber(@PathVariable("idOrCadNum") String idOrCadNumber) {
         String regex = "[0-9]";
         ResponseEntity<CadObject> response = null;
         if (idOrCadNumber.contains(":")) {
             Optional<CadObject> responseObject = cadObjectService.findObjectByCadNumber(idOrCadNumber);
             if (responseObject.isPresent()) {
                 CadObject cadObject = responseObject.get();
-                response =  new ResponseEntity<>(cadObject, HttpStatus.OK);
-            }
-            else response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+                response = new ResponseEntity<>(cadObject, HttpStatus.OK);
+            } else response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return response;
-        }
-        else if(idOrCadNumber.matches(regex)){
+        } else if (idOrCadNumber.matches(regex)) {
             Optional<CadObject> responseObject = cadObjectService.findObjectById(Long.parseLong(idOrCadNumber));
-            if(responseObject.isPresent()){
+            if (responseObject.isPresent()) {
                 CadObject cadObject = responseObject.get();
-                response =  new ResponseEntity<>(cadObject, HttpStatus.OK);
-            }
-            else response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
+                response = new ResponseEntity<>(cadObject, HttpStatus.OK);
+            } else response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return response;
-        }
-        else{
+        } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return response;
         }
     }
 
     @GetMapping("/get-all")
-    public ResponseEntity<List<CadObject>> getAllCadObject(){
+    public ResponseEntity<List<CadObject>> getAllCadObject() {
 
         List<CadObject> listObject = cadObjectService.getAllObject();
-
         return new ResponseEntity<>(listObject, HttpStatus.OK);
     }
 
     @PostMapping("/getNumber/{idOrNumCad}/update-cad")
-    public ResponseEntity<CadObject> updateObject(@PathVariable ("idOrNumCad") String idOrNumCad, @RequestBody CadObjectDTO cadObjectDTO){
+    public ResponseEntity<CadObject> updateObject(@PathVariable("idOrNumCad") String idOrNumCad, @RequestBody CadObjectDTO cadObjectDTO) {
         LOG.info("rabotaet update");
         String regex = "[0-9]";
         ResponseEntity<CadObject> response = null;
-        if(idOrNumCad.contains(":")){
+        if (idOrNumCad.contains(":")) {
             Optional<CadObject> findObject = cadObjectService.findObjectByCadNumber(idOrNumCad);
-            if(findObject.isPresent()){
+            if (findObject.isPresent()) {
                 CadObject updateObject = findObject.get();
                 cadObjectService.addObject(cadObjectService.cadObjectDTOToCadObject(updateObject, cadObjectDTO));
                 response = new ResponseEntity<>(HttpStatus.OK);
-            }
-            else {
+            } else {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return response;
-        }
-
-        else if(idOrNumCad.matches(regex)) {
+        } else if (idOrNumCad.matches(regex)) {
 
             Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(idOrNumCad));
-            if(findObject.isPresent()) {
-                LOG.info("кадастровый id "+cadObjectDTO.getCadNumber());
+            if (findObject.isPresent()) {
+                LOG.info("кадастровый id " + cadObjectDTO.getCadNumber());
                 CadObject updateObject = findObject.get();
                 cadObjectService.addObject(cadObjectService.cadObjectDTOToCadObject(updateObject, cadObjectDTO));
                 response = new ResponseEntity<>(HttpStatus.OK);
-            }
-            else {
+            } else {
                 response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             return response;
-        }
-        else{
+        } else {
             response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
             return response;
         }
     }
 
     @PostMapping("/getNumber/{idCadNum}/add-owner")
-    public ResponseEntity<OwnerCad> addOwner(@PathVariable ("idCadNum") String idNumCad, @RequestBody OwnerCad ownerCad){
+    public ResponseEntity<OwnerCad> addOwner(@PathVariable("idCadNum") String idNumCad, @RequestBody OwnerCad ownerCad) {
 
         Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(idNumCad));
-        if(findObject.isPresent()) {
+        if (findObject.isPresent()) {
             CadObject cadObject = findObject.get();
             ownerCad.setCadNumber(cadObject.getCadNumber());
             ownerCadService.addOwner(ownerCad, cadObject);
             return new ResponseEntity<>(ownerCad, HttpStatus.CREATED);
-        }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/getNumber/{idCadNum}/get-all-owner")
-    public ResponseEntity<List<OwnerCad>> getAllOwnerCadNum(@PathVariable ("idCadNum") String idCadNum){
+    public ResponseEntity<List<OwnerCad>> getAllOwnerCadNum(@PathVariable("idCadNum") String idCadNum) {
 
         Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(idCadNum));
-        if(findObject.isPresent()) {
+        if (findObject.isPresent()) {
             List<OwnerCad> listOwner = ownerCadService.getAllOwnerCad(findObject.get().getCadNumber());
             return new ResponseEntity<>(listOwner, HttpStatus.OK);
-        }
-        else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //тип документов добавить
     @PostMapping("/getNumber/{id}/files/downloads")
-    public ResponseEntity<String> addFileToCadObject(@PathVariable("id") String id ,@RequestParam("fileCad") MultipartFile downloadFile){
+    public ResponseEntity<String> addFileToCadObject(@PathVariable("id") String id,
+                                                     @RequestParam("fileCad") MultipartFile downloadFile) {
 
         Optional<CadObject> findObject = cadObjectService.findObjectById(Long.parseLong(id));
-        if(findObject.isPresent()){
+        if (findObject.isPresent()) {
             CadObject cadObject = findObject.get();
-            if(!downloadFile.isEmpty()) {
-                String pathStr = PATH_File+cadObject.getFarm().trim().replaceAll("\"","")+"/"+cadObject.getCadNumber().replaceAll(":","_")+"/"+downloadFile.getOriginalFilename();
+            if (!downloadFile.isEmpty()) {
+                String pathStr = PATH_File + cadObject.getFarm().trim().replaceAll("\"", "") + "/"
+                        + cadObject.getCadNumber().replaceAll(":", "_") + "/" + downloadFile.getOriginalFilename();
                 File file = new File(pathStr);
                 file.getParentFile().mkdirs();
                 try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file))) {
@@ -177,44 +165,41 @@ public class CadController {
                     byte[] bytes = downloadFile.getBytes();
                     bos.write(bytes);
                     fileCadService.addFileToCadObject(cadObject, pathStr, "Предварительный договор");
-                    return new ResponseEntity<>("Файл "+downloadFile.getOriginalFilename()+" загружен в "+cadObject.getCadNumber(), HttpStatus.OK);
+                    return new ResponseEntity<>("Файл " + downloadFile.getOriginalFilename() + " загружен в " + cadObject.getCadNumber(), HttpStatus.OK);
                 } catch (IOException e) {
                     e.printStackTrace();
                     return new ResponseEntity<>("Ошибка загрузки файла", HttpStatus.BAD_REQUEST);
-                }catch (Exception e){
-                    return new ResponseEntity<>("Ошибка - "+e.getMessage(), HttpStatus.BAD_REQUEST);
+                } catch (Exception e) {
+                    return new ResponseEntity<>("Ошибка - " + e.getMessage(), HttpStatus.BAD_REQUEST);
                 }
-            }
-            else {
+            } else {
                 return new ResponseEntity<>("Файл пустой!", HttpStatus.BAD_REQUEST);
             }
         }
-        return new ResponseEntity<>("Кадастр не найден",HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Кадастр не найден", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/getNumber/{cadId}/files/{fileId}")
-    public ResponseEntity<String> deleteFileCadObj(@PathVariable String fileId){
+    public ResponseEntity<String> deleteFileCadObj(@PathVariable String fileId) {
         Optional<FileCad> findFile = fileCadService.findCadById(Long.parseLong(fileId));
-        if(findFile.isPresent()){
+        if (findFile.isPresent()) {
             FileCad fileCad = findFile.get();
             File file = new File(fileCad.getFilePath());
             String nameFile = file.getName();
 
-            if(file.delete()){
+            if (file.delete()) {
                 fileCadService.deleteFile(fileCad.getId());
-                return new ResponseEntity<>("Файл " + nameFile +" удален!", HttpStatus.OK);
-            }
-            else return new ResponseEntity<>("Файл  не найден", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("Файл " + nameFile + " удален!", HttpStatus.OK);
+            } else return new ResponseEntity<>("Файл  не найден", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>("Не найден кадастровый номер!", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/getNumber/{id}/set-status")
-    public ResponseEntity<String> setArchiveStatusToCadObject(@PathVariable ("id") String id){
-      boolean setStatus =  cadObjectService.setArchiveStatusObj(Long.parseLong(id));
-      if (setStatus == true){
-          return new ResponseEntity<>("Объект удален!", HttpStatus.OK);
-      }
-      else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> setArchiveStatusToCadObject(@PathVariable("id") String id) {
+        boolean setStatus = cadObjectService.setArchiveStatusObj(Long.parseLong(id));
+        if (setStatus == true) {
+            return new ResponseEntity<>("Объект удален!", HttpStatus.OK);
+        } else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 }

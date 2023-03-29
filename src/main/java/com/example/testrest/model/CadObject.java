@@ -5,9 +5,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +29,7 @@ public class CadObject {
 
     private String typeOwn;
 
+    //    @JsonFormat(pattern = "yyyy-mm-dd")
     private LocalDate tenancy;
 
     @Column(nullable = false)
@@ -64,7 +67,7 @@ public class CadObject {
 
     private boolean archiveStatus;
 
-    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
+    //    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     @Column(updatable = false)
     private LocalDateTime createDate;
 
@@ -80,7 +83,6 @@ public class CadObject {
 
     @PrePersist
     protected void onCreate() {
-
         this.createDate = LocalDateTime.now();
         this.tenancy = LocalDate.now();
     }

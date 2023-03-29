@@ -1,49 +1,53 @@
 <p>cadcomponent works!</p>
 
 <div>
-  <table class="table">
-    <thead class="thead">
-    <th>Хозяйство</th>
-    <th>Кадастровый номер</th>
-    <th>Вид собственности</th>
-    <th>Площадь</th>
-    <th>Кадастровая стоимость</th>
-    <th>Земля под пашню по агроучету</th>
-    <th>Площадь в собственности</th>
-    <th>Аренда</th>
-    <th>Срок действия договора</th>
-    <th>Аренда внутри группы</th>
-    <th>Аффлириованое лицо</th>
-    <th>Не обрабатывается</th>
-    <th>Причина</th>
-    <th>Использование земель без документов</th>
-    <th>Примечание</th>
-    <th>Действия</th>
-    </thead>
+    <table class="table">
+        <thead class="thead">
+        <th>Хозяйство</th>
+        <th>Кадастровый номер</th>
+        <th>Вид собственности</th>
+        <th>Площадь</th>
+        <th>Кадастровая стоимость</th>
+        <th>Земля под пашню по агроучету</th>
+        <th>Площадь в собственности</th>
+        <th>Аренда</th>
+        <th>Срок действия договора</th>
+        <th>Аренда внутри группы</th>
+        <th>Аффлириованое лицо</th>
+        <th>Не обрабатывается</th>
+        <th>Причина</th>
+        <th>Использование земель без документов</th>
+        <th>Примечание</th>
+        <th>Дата добавления</th>
+        <th>Действия</th>
+        </thead>
 
-    <tbody class ="tbody">
-    <tr *ngFor = "let cad of cads">
-      <td>{{cad.farm}}</td>
-      <td>{{cad.cadNumber}}</td>
-      <td>{{cad.typeOwn}}</td>
-      <td>{{cad.area}}</td>
-      <td>{{cad.cadCost}}</td>
-      <td>{{cad.agroArea}}</td>
-      <td>{{cad.shareOwn}}</td>
-      <td>{{cad.shareRent}}</td>
-      <td>{{cad.tenancy}}</td>
-      <td>{{cad.farmRent}}</td>
-      <td>{{cad.afOwnerArea}}</td>
-      <td>{{cad.notCultivated}}</td>
-      <td>{{cad.cause}}</td>
-      <td>{{cad.notDocument}}</td>
-      <td>{{cad.note1}}</td>
-      <td>
-        <button>Редактировать</button>
-        <br>
-        <button>Удалить</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+        <tbody class="tbody">
+        <tr *ngFor="let cad of cads">
+            <td>{{cad.farm}}</td>
+            <td>{{cad.cadNumber}}</td>
+            <td>{{cad.typeOwn}}</td>
+            <td>{{cad.area}}</td>
+            <td>{{cad.cadCost}}</td>
+            <td>{{cad.agroArea}}</td>
+            <td>{{cad.shareOwn}}</td>
+            <td>{{cad.shareRent}}</td>
+            <td>{{cad.tenancy | date:'dd-MM-yyyy'}}</td>
+            <td>{{cad.farmRent}}</td>
+            <td>{{cad.afOwnerArea}}</td>
+            <td>{{cad.notCultivated}}</td>
+            <td>{{cad.cause}}</td>
+            <td>{{cad.notDocument}}</td>
+            <td>{{cad.note1}}</td>
+            <td>{{cad.createDate | date:'dd-MM-yyyy'}}</td>
+            <td>
+                <button>Редактировать</button>
+                <br>
+                <button class="btn btn-default" (click)="removeUserCadObject(cad)"> Удалить</button>
+                <br>
+                <app-upload-file></app-upload-file>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 </div>

@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,15 +21,16 @@ public interface CadObjectRepository extends JpaRepository<CadObject, Long> {
 
 
     @Transactional
-    @Query(value = "select c from CadObject c where c.archiveStatus= false")
+    @Query(value = "select c from CadObject c where c.archiveStatus = false")
     List<CadObject> getAllObject();
 
 
-    List<CadObject> findCadObjectByFarm(String farm);
+    @Query("select c from CadObject c where c.farm like :farm and c.archiveStatus = false")
+    List<CadObject> findCadObjectByFarm(@Param("farm") String farm);
 
     @Transactional
     @Query(value = "select c from CadObject c where c.farm =: farm and c.typeOwn =: typeOwn and c.archiveStatus = false")
-    List<CadObject> findCadObjectByFarmAndTypeOwn(String farm, String typeOwn);
+    List<CadObject> findCadObjectByFarmAndTypeOwn(@Param("farm") String farm, @Param("typeOwn") String typeOwn);
 
 
 }

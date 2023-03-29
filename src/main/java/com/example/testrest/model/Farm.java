@@ -16,4 +16,5 @@ public class Farm {
     private Long id;
 
     private String farm;
+    private boolean archiveStatus;
 }
